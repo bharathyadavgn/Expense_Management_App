@@ -136,7 +136,6 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           : () async {
                         setState(() => _processing = true);
 
-                        // 1️⃣ CREATE REPORT
                         final reportId = await ref
                             .read(reportProvider.notifier)
                             .createReport(
@@ -145,7 +144,6 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           userId: userId,
                         );
 
-                        // 2️⃣ ATTACH EXPENSES
                         await ref
                             .read(reportProvider.notifier)
                             .attachExpensesToReport(
@@ -153,7 +151,6 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           _selectedExpenseIds.toList(),
                         );
 
-                        // 3️⃣ RELOAD PROVIDERS (IMPORTANT FIX)
                         await ref
                             .read(expenseProvider.notifier)
                             .loadExpensesForUser(userId);
@@ -164,7 +161,6 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
 
                         if (!mounted) return;
 
-                        // 4️⃣ SUCCESS MESSAGE
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             behavior: SnackBarBehavior.floating,
@@ -182,7 +178,6 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
 
                         await Future.delayed(const Duration(milliseconds: 600));
 
-                        // 5️⃣ NAVIGATE BACK
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/my-reports',
