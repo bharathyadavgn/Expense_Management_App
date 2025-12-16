@@ -136,7 +136,7 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           : () async {
                         setState(() => _processing = true);
 
-                        //  CREATE REPORT
+                        // 1️⃣ CREATE REPORT
                         final reportId = await ref
                             .read(reportProvider.notifier)
                             .createReport(
@@ -145,7 +145,7 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           userId: userId,
                         );
 
-                        //  ATTACH EXPENSES
+                        // 2️⃣ ATTACH EXPENSES
                         await ref
                             .read(reportProvider.notifier)
                             .attachExpensesToReport(
@@ -153,13 +153,18 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
                           _selectedExpenseIds.toList(),
                         );
 
-                        //   FORCE PROVIDERS TO REFRESH
-                        ref.invalidate(expenseProvider);
-                        ref.invalidate(reportProvider);
+                        // 3️⃣ RELOAD PROVIDERS (IMPORTANT FIX)
+                        await ref
+                            .read(expenseProvider.notifier)
+                            .loadExpensesForUser(userId);
+
+                        await ref
+                            .read(reportProvider.notifier)
+                            .loadReportsForUser(userId);
 
                         if (!mounted) return;
 
-                        // ️ CONFIRMATION
+                        // 4️⃣ SUCCESS MESSAGE
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             behavior: SnackBarBehavior.floating,
@@ -177,16 +182,14 @@ class _AttachExpensesPageState extends ConsumerState<AttachExpensesPage> {
 
                         await Future.delayed(const Duration(milliseconds: 600));
 
-                        // ️ NAVIGATE
+                        // 5️⃣ NAVIGATE BACK
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/my-reports',
                               (route) => route.isFirst,
-                          arguments: reportId,
                         );
                       },
                     ),
-
                   ],
                 ),
               ),
