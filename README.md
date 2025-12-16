@@ -119,6 +119,7 @@ Payment Processing
 Payment History
 
 # Setup Instructions
+git clone [<repository-url>](https://github.com/bharathyadavgn/Expense_Management_App)
 flutter pub get
 flutter run
 
@@ -210,3 +211,5 @@ State management
 Workflow implementation
 Debugging & refinements
 Documentation
+
+![Expense_Management_App_architecture](https://github.com/user-attachments/assets/3cb001a5-e3cb-4457-ae95-5086ea5ebf5a)
